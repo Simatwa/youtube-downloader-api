@@ -4,7 +4,9 @@
 <p align="center">
 <a href="LICENSE"><img alt="License" src="https://img.shields.io/static/v1?logo=license&color=Blue&message=Unlicense&label=License"/></a>
 <a href="https://github.com/Simatwa/youtube-downloader-api/releases"><img src="https://img.shields.io/github/v/release/Simatwa/youtube-downloader-api?label=Release&logo=github" alt="Latest release"></img></a>
+<!--
 <a href="https://github.com/Simatwa/youtube-downloader-api/releases"><img src="https://img.shields.io/github/release-date/Simatwa/youtube-downloader-api?label=Release date&logo=github" alt="release date"></img></a>
+-->
 <a href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg"/></a>
 <a href="https://github.com/Simatwa/youtube-downloader-api"><img src="https://hits.sh/github.com/Simatwa/youtube-downloader-api.svg?label=Total%20hits&logo=dotenv" alt="Total hits"/></a>
 </p>
