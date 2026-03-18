@@ -85,6 +85,7 @@ class EnvVariables(BaseModel):
     append_id_in_filename: bool = False
 
     js_runtimes: str | None = None
+    js_runtimes_name: str | None = 'deno'
 
     @property
     def ytdlp_params(self) -> dict[str, int | bool | None]:
@@ -124,7 +125,9 @@ class EnvVariables(BaseModel):
         }
 
         if self.js_runtimes:
-            params["js_runtimes"] = self.js_runtimes
+            params["js_runtimes"] = {
+                self.js_runtimes_name: self.js_runtimes
+            }
 
         if self.proxy:
             # Passing proxy with null value makes download to fail

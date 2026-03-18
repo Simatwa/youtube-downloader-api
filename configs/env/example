@@ -157,6 +157,9 @@ geo_bypass = false
 # eg. /home/smartwa/.deno/bin/deno
 # js_runtimes = 
 
+# Check https://github.com/yt-dlp/yt-dlp/issues/15012 for more details 
+# js_runtimes_name = deno
+
 # POST-DOWNLOAD OPTIONS
 
 embed_subtitles = false

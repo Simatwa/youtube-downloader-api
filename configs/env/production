@@ -163,3 +163,6 @@ append_id_in_filename = true
 # deno is recommended - https://github.com/denoland/deno
 # eg. /home/smartwa/.deno/bin/deno
 # js_runtimes = 
+
+# Check https://github.com/yt-dlp/yt-dlp/issues/15012 for more details 
+# js_runtimes_name = deno
