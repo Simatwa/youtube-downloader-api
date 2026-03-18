@@ -155,10 +155,11 @@ geo_bypass = false
 # Path to JS-Runtime
 # deno is recommended - https://github.com/denoland/deno
 # eg. /home/smartwa/.deno/bin/deno
-# js_runtimes = 
+#js_runtime = /home/smartwa/.deno/bin/deno
 
 # Check https://github.com/yt-dlp/yt-dlp/issues/15012 for more details 
-# js_runtimes_name = deno
+# js_runtime_name = deno
+
 
 # POST-DOWNLOAD OPTIONS
 

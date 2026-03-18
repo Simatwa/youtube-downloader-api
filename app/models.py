@@ -84,8 +84,8 @@ class EnvVariables(BaseModel):
 
     append_id_in_filename: bool = False
 
-    js_runtimes: str | None = None
-    js_runtimes_name: str | None = 'deno'
+    js_runtime: str | None = None
+    js_runtime_name: str | None = 'deno'
 
     @property
     def ytdlp_params(self) -> dict[str, int | bool | None]:
@@ -124,10 +124,10 @@ class EnvVariables(BaseModel):
             # runtimes
         }
 
-        if self.js_runtimes:
+        if self.js_runtime:
             params["js_runtimes"] = {
-                self.js_runtimes_name: {
-                    'path' : self.js_runtimes
+                self.js_runtime_name: {
+                    'path' : self.js_runtime
                 }
             }
 
@@ -200,13 +200,13 @@ class EnvVariables(BaseModel):
             raise TypeError(f"Invalid cookiefile passed - {value}")
         return value
 
-    @field_validator("js_runtimes")
+    @field_validator("js_runtime")
     def validate_js_runtimes(value):
         if not value:
             return
         file = Path(value)
         if not file.exists() or not file.is_file():
-            raise TypeError(f"Invalid valuse for js_runtime passed - {value}")
+            raise TypeError(f"Invalid value for js_runtime passed - {value}")
         return value
 
     @field_validator("frontend_dir")
