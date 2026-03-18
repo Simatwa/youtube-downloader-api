@@ -152,6 +152,11 @@ geo_bypass = false
 # explicit geographic restriction bypassing via faking
 # X-Forwarded-For HTTP header
 
+# Path to JS-Runtime
+# deno is recommended - https://github.com/denoland/deno
+# eg. /home/smartwa/.deno/bin/deno
+# js_runtimes = 
+
 # POST-DOWNLOAD OPTIONS
 
 embed_subtitles = false
@@ -159,4 +164,5 @@ embed_subtitles = false
 
 append_id_in_filename = false
 # Include the video id in its filename
-# To add uniqueness to videos with a common title.
+# To add uniqueness to videos with a common title
+
