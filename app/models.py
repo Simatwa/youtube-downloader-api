@@ -126,7 +126,9 @@ class EnvVariables(BaseModel):
 
         if self.js_runtimes:
             params["js_runtimes"] = {
-                self.js_runtimes_name: self.js_runtimes
+                self.js_runtimes_name: {
+                    'path' : self.js_runtimes
+                }
             }
 
         if self.proxy:
