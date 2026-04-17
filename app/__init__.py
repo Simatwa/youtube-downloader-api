@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.config import loaded_config
+from app.config import loaded_config, pyproject_dot_toml_details
 from app.events import (
     create_temp_dirs,
     event_all_delete_expired_extracted_info,
@@ -21,12 +21,28 @@ from app.utils import logger
 
 create_temp_dirs()
 
+project_details = pyproject_dot_toml_details["project"]
+
 from app.v1 import v1_router  # noqa: E402
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup
+    # create_temp_dirs()
+    event_startup_create_tables()
+    event_shutdown_clear_previous_downloads()
+    event_all_delete_expired_extracted_info()
+    yield
+    # shutdown
+    event_shutdown_clear_previous_downloads()
+    event_all_delete_expired_extracted_info()
+
 
 app = FastAPI(
     title=loaded_config.api_title,
-    version="0.1.5",
-    summary="Download Youtube videos in mp4, webm, m4a and mp3 formats.",
+    version=project_details["version"],
+    summary=project_details["description"],
     description=loaded_config.api_description,
     terms_of_service=str(loaded_config.api_terms_of_service),
     contact=loaded_config.contacts,
@@ -37,6 +53,7 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
+    lifespan=lifespan,
 )
 
 app.include_router(v1_router, prefix="/api", tags=["v1"])
@@ -98,18 +115,6 @@ async def add_cache_header(request: Request, call_next):
         response.headers["Cache-Control"] = "public, max-age=86400"
 
     return response
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # startup
-    # create_temp_dirs()
-    event_startup_create_tables()
-    event_all_delete_expired_extracted_info()
-    yield app
-    # shutdown
-    event_shutdown_clear_previous_downloads()
-    event_all_delete_expired_extracted_info()
 
 
 app.add_middleware(

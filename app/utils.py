@@ -16,7 +16,7 @@ from yt_dlp_bonus.exceptions import (
     UserInputError,
 )
 
-from app.config import download_dir, loaded_config
+from app.config import DOWNLOAD_DIR, loaded_config
 from app.exceptions import InvalidVideoUrl
 
 logger = logging.getLogger(__file__)
@@ -45,7 +45,7 @@ compiled_ytdlp_download_error_msg_pattern = re.compile(
 
 def create_temp_dirs() -> t.NoReturn:
     """Create temp-dir for saving files temporarily"""
-    for directory in [download_dir]:
+    for directory in [DOWNLOAD_DIR]:
         os.makedirs(directory, exist_ok=True)
 
 

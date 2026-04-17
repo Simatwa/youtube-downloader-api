@@ -23,7 +23,7 @@ from yt_dlp_bonus.constants import audioQualities, videoQualities
 from yt_dlp_bonus.utils import get_size_string
 
 import app.v1.models as models
-from app.config import download_dir, loaded_config, temp_dir
+from app.config import DOWNLOAD_DIR, TEMP_DIR, loaded_config
 from app.models import CustomWebsocketResponse
 from app.utils import (
     get_absolute_link_to_static_file,
@@ -39,14 +39,14 @@ router = APIRouter(prefix="/v1")
 yt_params = loaded_config.ytdlp_params
 
 yt_params.update({
-    "paths": {"home": download_dir.as_posix(), "temp": temp_dir.name}
+    "paths": {"home": DOWNLOAD_DIR.as_posix(), "temp": TEMP_DIR.name}
 })
 
 yt = YoutubeDLBonus(params=yt_params)
 
 downloader = Downloader(
     yt=yt,
-    working_directory=download_dir,
+    working_directory=DOWNLOAD_DIR,
     clear_temps=loaded_config.clear_temps,
     filename_prefix=loaded_config.filename_prefix,
 )

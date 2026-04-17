@@ -8,7 +8,7 @@ from sqlmodel import Session, delete
 
 from app.config import loaded_config
 from app.db import VideoInfo, create_tables, engine
-from app.utils import create_temp_dirs, download_dir, logger, utc_now
+from app.utils import DOWNLOAD_DIR, create_temp_dirs, logger, utc_now
 
 
 def event_startup_create_tempdirs():
@@ -32,7 +32,7 @@ def event_all_delete_expired_extracted_info():
 
 
 def event_shutdown_clear_previous_downloads():
-    rmtree(download_dir)
+    rmtree(DOWNLOAD_DIR)
 
 
 def register_events(app: FastAPI) -> FastAPI:

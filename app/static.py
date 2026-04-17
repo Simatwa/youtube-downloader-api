@@ -6,15 +6,15 @@ from urllib.parse import unquote
 
 from flask import Flask, request, send_from_directory
 
-from app.config import download_dir
+from app.config import DOWNLOAD_DIR
 
 app = Flask(__name__)
 static_app = app
 
 ref_directory = (
-    download_dir
-    if download_dir.is_absolute()
-    else Path(getcwd()).joinpath(download_dir)
+    DOWNLOAD_DIR
+    if DOWNLOAD_DIR.is_absolute()
+    else Path(getcwd()).joinpath(DOWNLOAD_DIR)
 )
 
 
