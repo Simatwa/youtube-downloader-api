@@ -7,7 +7,7 @@
 		  deploy clear-expired-extracts
 	)
 
-PYTHON := python3
+PYTHON := uv run --active python
 PIP := $(PYTHON) -m pip
 HOST := 0.0.0.0
 
@@ -15,7 +15,7 @@ default: install test runserver
 
 # Target to install dependencies
 install:
-	$(PIP) install -r requirements.txt
+	uv sync
 
 # Target to run tests
 test: test-api-v1

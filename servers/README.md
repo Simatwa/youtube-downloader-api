@@ -7,13 +7,13 @@ Allows the API to only serve the dynamic contents as it focuses on static ones.
 
 ### Usage
 
-`$ python -m servers.static`
+`$ uv run python -m servers.static`
 
 <details open>
 
 <summary>
 
-  <code> $ python -m servers.static --help </code>
+  <code> $ uv run python -m servers.static --help </code>
 
 </summary>
 
@@ -47,13 +47,13 @@ accessible securely (https).
 
 ### Usage
 
-`$ python -m servers.proxy http://localhost:8000/`
+`$ uv run python -m servers.proxy http://localhost:8000/`
 
 <details open>
 
 <summary>
 
-  <code> $ python -m servers.proxy --help </code>
+  <code> $ uv run python -m servers.proxy --help </code>
 
 </summary>
 

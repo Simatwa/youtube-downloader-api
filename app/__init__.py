@@ -1,19 +1,21 @@
-"""Youtube downloader app"""
+"""Youtube downloader API"""
 
-from fastapi import FastAPI, Request, Response
-from fastapi.responses import RedirectResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from app.events import register_events
-from app.utils import create_temp_dirs, logger
-from app.static import static_app
-from a2wsgi import WSGIMiddleware
-from app.config import loaded_config
 import time
+
+from a2wsgi import WSGIMiddleware
+from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+
+from app.config import loaded_config
+from app.events import register_events
+from app.static import static_app
+from app.utils import create_temp_dirs, logger
 
 create_temp_dirs()
 
-from app.v1 import v1_router
+from app.v1 import v1_router  # noqa: E402
 
 app = FastAPI(
     title=loaded_config.api_title,
@@ -43,12 +45,17 @@ def test_live():
     return {}
 
 
-if loaded_config.frontend_dir and not loaded_config.serve_frontend_from_static_server:
+if (
+    loaded_config.frontend_dir
+    and not loaded_config.serve_frontend_from_static_server
+):
     # Lets's serve the frontend from /
     logger.info(f"Serving frontend. Frontend dir: {loaded_config.frontend_dir}")
     app.mount(
         "/",
-        StaticFiles(directory=loaded_config.frontend_dir, check_dir=True, html=True),
+        StaticFiles(
+            directory=loaded_config.frontend_dir, check_dir=True, html=True
+        ),
         name="frontend",
     )
 

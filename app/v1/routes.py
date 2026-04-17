@@ -1,35 +1,46 @@
-from fastapi import APIRouter, Query, Request, WebSocket, Header
-from fastapi import status, HTTPException
-import app.v1.models as models
-from app.v1.utils import get_extracted_info
-from app.utils import (
-    router_exception_handler,
-    get_absolute_link_to_static_file,
-    silence_websocket_exceptions,
-    sanitize_filename,
-)
-from app.config import loaded_config, download_dir, temp_dir
-from pathlib import Path
+import asyncio
+import json
+import typing as t
+from functools import lru_cache
 from os import path
-from yt_dlp_bonus import YoutubeDLBonus, Downloader
+from pathlib import Path
+
+from fastapi import (
+    APIRouter,
+    Header,
+    HTTPException,
+    Query,
+    Request,
+    WebSocket,
+    status,
+)
+from httpx import Proxy
+from innertube import InnerTube
+from pydantic import ValidationError
+from starlette.websockets import WebSocketState
+from yt_dlp_bonus import Downloader, YoutubeDLBonus
 from yt_dlp_bonus.constants import audioQualities, videoQualities
 from yt_dlp_bonus.utils import get_size_string
-from functools import lru_cache
-import typing as t
-import asyncio
-from pydantic import ValidationError
+
+import app.v1.models as models
+from app.config import download_dir, loaded_config, temp_dir
 from app.models import CustomWebsocketResponse
-from app.utils import logger
-import json
-from starlette.websockets import WebSocketState
-from innertube import InnerTube
-from httpx import Proxy  # noqa: F401
+from app.utils import (
+    get_absolute_link_to_static_file,
+    logger,
+    router_exception_handler,
+    sanitize_filename,
+    silence_websocket_exceptions,
+)
+from app.v1.utils import get_extracted_info
 
 router = APIRouter(prefix="/v1")
 
 yt_params = loaded_config.ytdlp_params
 
-yt_params.update({"paths": {"home": download_dir.as_posix(), "temp": temp_dir.name}})
+yt_params.update({
+    "paths": {"home": download_dir.as_posix(), "temp": temp_dir.name}
+})
 
 yt = YoutubeDLBonus(params=yt_params)
 
@@ -61,7 +72,9 @@ def search_videos_by_key(query: str, limit: int = -1) -> list[dict[str, str]]:
     Returns:
         list[dict[str, str]]: Sorted shallow results.
     """
-    video_search_results = innertube_client.search(query, params=PARAMS_TYPE_VIDEO)
+    video_search_results = innertube_client.search(
+        query, params=PARAMS_TYPE_VIDEO
+    )
     video_metadata_container: list[dict] = []
     contents = video_search_results["contents"]["twoColumnSearchResultsRenderer"][
         "primaryContents"
@@ -171,7 +184,9 @@ def process_video_for_download(
     payload: models.MediaDownloadProcessPayload,
     x_lang: t.Annotated[
         str,
-        Header(description="Two-letter ISO set language code for subtitle purposes."),
+        Header(
+            description="Two-letter ISO set language code for subtitle purposes."
+        ),
     ] = None,
 ) -> models.MediaDownloadResponse:
     """Initiate download processing
@@ -185,7 +200,7 @@ def process_video_for_download(
 
 @router_exception_handler
 def real_download_process(
-    request: t.Union[Request, WebSocket],
+    request: Request | WebSocket,
     payload: models.MediaDownloadProcessPayload,
     progress_hooks: list[t.Callable] = [],
     **kwargs,
@@ -201,33 +216,39 @@ def real_download_process(
         ),
     )
     target_format = video_formats.get(payload.quality)
+    id_placeholder = ", %(id)s" if loaded_config.append_id_in_filename else ""
 
     ytdl_opts = {
         "outtmpl": (
             f"{loaded_config.filename_prefix or ''}"
             f"{sanitize_filename(extracted_info.title)} "
-            f"(%(format_note)s{', %(id)s' if loaded_config.append_id_in_filename else ''}).%(ext)s"
+            f"(%(format_note)s{id_placeholder}).%(ext)s"
         )
     }
 
     if loaded_config.embed_subtitles and payload.x_lang is not None:
-        ytdl_opts.update(
-            {
-                "postprocessors": [
-                    {"already_have_subtitle": False, "key": "FFmpegEmbedSubtitle"}
-                ],
-                "writeautomaticsub": True,
-                "writesubtitles": True,
-                "subtitleslangs": [payload.x_lang],
-            }
-        )
+        ytdl_opts.update({
+            "postprocessors": [
+                {"already_have_subtitle": False, "key": "FFmpegEmbedSubtitle"}
+            ],
+            "writeautomaticsub": True,
+            "writesubtitles": True,
+            "subtitleslangs": [payload.x_lang],
+        })
 
     kwargs["ytdl_params"] = ytdl_opts
 
     if payload.quality in audioQualities:
         assert target_format, (
             f"The video does not support the audio quality '{payload.quality}'. "
-            f"Try other audio qualities like {', '.join([quality for quality in audioQualities if quality != payload.quality])}."
+            "Try other audio qualities like "
+            f"{
+                ', '.join([
+                    quality
+                    for quality in audioQualities
+                    if quality != payload.quality
+                ])
+            }."
         )
         processed_info_dict = downloader.ydl_run_audio(
             extracted_info,
@@ -239,7 +260,13 @@ def real_download_process(
     elif payload.quality in videoQualities:
         assert target_format, (
             f"The video does not support the video quality '{payload.quality}'. "
-            f"Try other video qualities like {', '.join([quality for quality in videoQualities if quality != payload.quality])}."
+            f"Try other video qualities like {
+                ', '.join([
+                    quality
+                    for quality in videoQualities
+                    if quality != payload.quality
+                ])
+            }."
         )
         processed_info_dict = downloader.ydl_run_video(
             extracted_info,
@@ -297,7 +324,9 @@ async def download_websocket_handler(websocket: WebSocket):
             if d["status"] == "downloading":
                 try:
                     progress = (
-                        d.get("downloaded_bytes", 0) / d.get("total_bytes", 1) * 100
+                        d.get("downloaded_bytes", 0)
+                        / d.get("total_bytes", 1)
+                        * 100
                     )
                 except Exception:
                     return
@@ -310,8 +339,8 @@ async def download_websocket_handler(websocket: WebSocket):
 
                 progress_data = {
                     "progress": f"{progress:.1f}%",
-                    "speed": f"{speed/1024/1024:.1f} MB/s",
-                    "eta": f"{eta//60}:{eta%60:02d}",
+                    "speed": f"{speed / 1024 / 1024:.1f} MB/s",
+                    "eta": f"{eta // 60}:{eta % 60:02d}",
                     "ext": d.get("filename", "").split(".")[-1],
                 }
                 asyncio.run(

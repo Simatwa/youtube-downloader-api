@@ -1,5 +1,6 @@
-import typer
 import typing as t
+
+import typer
 from fastapi_cli.cli import app as fastapi_app
 
 app = typer.Typer(

@@ -1,30 +1,34 @@
 """Common functions and variable to the APP"""
 
+import logging
 import os
 import re
-import logging
-from pathlib import Path
 import typing as t
+from datetime import UTC, datetime, timezone
 from functools import wraps
-from fastapi import HTTPException
-from fastapi import status
+from pathlib import Path
+
+from fastapi import HTTPException, Request, WebSocket, status
+from yt_dlp.utils import DownloadError
 from yt_dlp_bonus.exceptions import (
-    UserInputError,
     FileSizeOutOfRange,
     UknownDownloadFailure,
+    UserInputError,
 )
-from yt_dlp.utils import DownloadError
-from datetime import datetime, timezone
-from app.exceptions import InvalidVideoUrl
+
 from app.config import download_dir, loaded_config
-from fastapi import Request, WebSocket
+from app.exceptions import InvalidVideoUrl
 
 logger = logging.getLogger(__file__)
 
 compiled_video_id_patterns = (
     re.compile(r"^https?://youtu\.be/([\w\-_]{11}).*"),  # shareable link
-    re.compile(r"^https?://www\.youtube\.com/watch\?v=([\w\-_]{11})$"),  # watch link
-    re.compile(r"^https?://www\.youtube\.com/embed/([\w\-_]{11})$"),  # embedded link
+    re.compile(
+        r"^https?://www\.youtube\.com/watch\?v=([\w\-_]{11})$"
+    ),  # watch link
+    re.compile(
+        r"^https?://www\.youtube\.com/embed/([\w\-_]{11})$"
+    ),  # embedded link
     re.compile(r"^([\w\-_]{11})$"),  # video id only
     re.compile(
         r"^https?://youtube\.com/shorts/([\w\-_]{11}).*"
@@ -74,7 +78,9 @@ def router_exception_handler(func: t.Callable):
             FileSizeOutOfRange,
             UknownDownloadFailure,
         ) as e:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+            )
         except DownloadError as e:
             msg = re.findall(compiled_ytdlp_download_error_msg_pattern, e.msg)
             if msg:
@@ -82,7 +88,8 @@ def router_exception_handler(func: t.Callable):
                 status_code = status.HTTP_403_FORBIDDEN
             else:
                 detail = (
-                    "Server encountered an issue while trying to handle that request!"
+                    "Server encountered an issue while trying to handle that"
+                    " request!"
                 )
                 status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -90,7 +97,9 @@ def router_exception_handler(func: t.Callable):
         except Exception as e:
             logger.exception(e)
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            detail = "Server encountered an issue while trying to handle that request!"
+            detail = (
+                "Server encountered an issue while trying to handle that request!"
+            )
             raise HTTPException(status_code=status_code, detail=detail)
 
     return decorator
@@ -98,7 +107,7 @@ def router_exception_handler(func: t.Callable):
 
 def utc_now() -> datetime:
     """current time in utc"""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 def get_video_id(url: str) -> str:
@@ -120,9 +129,7 @@ def get_video_id(url: str) -> str:
     raise InvalidVideoUrl(f"Invalid video url passed - {url}")
 
 
-def get_absolute_link_to_static_file(
-    filename: str, request: t.Union[Request, WebSocket]
-):
+def get_absolute_link_to_static_file(filename: str, request: Request | WebSocket):
     """Get absolute url to a static file"""
     if loaded_config.static_server_url:
         return os.path.join(loaded_config.static_server_url.__str__(), filename)

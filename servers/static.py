@@ -5,16 +5,18 @@ The sole purpose of this is to reduce the work-load on youtube-downloader API.
 Allows the API to only serve the dynamic contents as it focuses on static ones.
 """
 
-from flask import (
-    Flask,
-    request,
-    send_from_directory,
-    render_template,
-)
-from app.config import download_dir, loaded_config
-from urllib.parse import unquote
 from os import getcwd
 from pathlib import Path
+from urllib.parse import unquote
+
+from flask import (
+    Flask,
+    render_template,
+    request,
+    send_from_directory,
+)
+
+from app.config import download_dir, loaded_config
 
 app = Flask(__name__)
 static_app = app
@@ -41,7 +43,9 @@ if loaded_config.serve_frontend_from_static_server and loaded_config.frontend_di
 @app.get("/file/<path:name>")
 def send_static_file(name):
     download = request.args.get("download", "0") in ("1", "true")
-    response = send_from_directory(ref_directory, unquote(name), as_attachment=download)
+    response = send_from_directory(
+        ref_directory, unquote(name), as_attachment=download
+    )
     response.headers["Cache-Control"] = "public, max-age=7200"
     return response
 

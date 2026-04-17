@@ -1,10 +1,12 @@
 """This module contains code for serving static contents using flask framework"""
 
-from flask import Flask, request, send_from_directory
-from app.config import download_dir
-from urllib.parse import unquote
 from os import getcwd
 from pathlib import Path
+from urllib.parse import unquote
+
+from flask import Flask, request, send_from_directory
+
+from app.config import download_dir
 
 app = Flask(__name__)
 static_app = app

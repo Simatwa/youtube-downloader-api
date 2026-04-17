@@ -1,23 +1,27 @@
 #!/usr/bin/python
-"""Hosting web-interface over https makes http (insecure) API calls to fail except to localhost.
-So this script links the two; a youtube-downloader API accessible over http and a web-interface that's
-accessible securely (https).
+"""Hosting web-interface over https makes http (insecure) API calls to fail
+except to localhost. So this script links the two; a youtube-downloader API
+accessible over http and a web-interface that's accessible securely (https).
 
 # Steps
 
 1. Host youtube-downloader over http (insecure)
-2. Start this proxy (locally) and point base_url to the address of youtube-downloader
+2. Start this proxy (locally) and point base_url to the address of
+ youtube-downloader-api
 3. Point API-BASE-URL in web-interface to proxy's address.
 """
-from flask import request, Flask, Response, jsonify
+
+import logging
+import sys
+import typing as t
+from dataclasses import dataclass
+from os import path
+
+from flask import Flask, Response, jsonify, request
 from flask.views import MethodView
 from flask_cors import CORS
 from requests import Session
 from requests.exceptions import Timeout
-from dataclasses import dataclass
-from os import path
-import logging
-import typing as t
 
 session = Session()
 session.headers = {
@@ -30,6 +34,7 @@ request_timeout = None
 
 app = Flask(__name__)
 
+logger = logging.getLogger(__name__)
 
 cors = CORS(
     app,
@@ -44,11 +49,12 @@ cors = CORS(
 )
 
 
-logging.basicConfig(
+logger.basicConfig(
     format="%(asctime)s - %(levelname)s : %(message)s",
-    level=logging.INFO,
+    level=logger.INFO,
     datefmt="%H:%M:%S %d-%b-%Y",
 )
+
 
 def get_exception_string(e):
     return e.args[1] if e.args and len(e.args) > 1 else str(e)
@@ -63,7 +69,7 @@ class ErrorResponse:
 
     def respond(self) -> dict:
         """complete app-compatible response"""
-        return (jsonify(dict(detail=self.detail)), self.status_code)
+        return (jsonify({"detail": self.detail}), self.status_code)
 
 
 def view_error_handler(func: t.Callable):
@@ -71,21 +77,18 @@ def view_error_handler(func: t.Callable):
 
     def decorator(*args, **kwargs):
         try:
-            err = None
             return func(*args, **kwargs)
         except Timeout:
-            err = ErrorResponse(
-                detail=f"Connection timed out while connecting to API after {request_timeout}",
+            return ErrorResponse(
+                detail="Connection timed out while connecting to API "
+                f"after {request_timeout}",
                 timeout=504,
-            )
+            ).respond()
         except Exception as e:
-            err = ErrorResponse(
+            return ErrorResponse(
                 detail=get_exception_string(e),
                 status_code=500,
-            )
-        finally:
-            if err:
-                return err.respond()
+            ).respond()
 
     return decorator
 
@@ -95,7 +98,7 @@ class ProxyView(MethodView):
 
     init_every_request = False
     api_base_url: str = None
-    methods = ["GET", "POST"]
+    methods = ("GET", "POST")
 
     @property
     def request_params(self) -> dict:
@@ -118,7 +121,7 @@ class ProxyView(MethodView):
     def get_absolute_url(self, endpoint: str) -> str:
         return path.join(self.api_base_url, endpoint)
 
-    def process_resp_headers(self, request_headers) -> dict:
+    def process_resp_headers(self, request_headers: dict) -> dict:
         x_date = request_headers.get("Date")
         x_server = request_headers.get("server")
         request_headers.pop("Date")
@@ -137,7 +140,7 @@ class ProxyView(MethodView):
             timeout=request_timeout,
             headers=self.request_headers,
         )
-        logging.debug(
+        logger.debug(
             f"Serving {request.remote_addr} - {api_endpoint} - {resp.status_code}"
         )
         return Response(
@@ -157,7 +160,7 @@ class ProxyView(MethodView):
             timeout=request_timeout,
             headers=self.request_headers,
         )
-        logging.debug(
+        logger.debug(
             f"Serving {request.remote_addr} - {api_endpoint} - {resp.status_code}"
         )
         return Response(
@@ -177,8 +180,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="youtube-downloader-proxy-server",
         description=(
-            "Meant to forward request to and fro"
-            " youtube-downloader API serving on http"
+            "Meant to forward request to and fro youtube-downloader API serving "
+            "on http"
         ),
         epilog="Not meant for production purposes.",
     )
@@ -202,12 +205,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if not args.base_url.startswith("http"):
         print(
-            f"Error : Upstream proxy must have protocol [http|http] - {args.base_url}"
+            "Error : Upstream proxy must have protocol [http|http] - "
+            f"{args.base_url}"
         )
-        exit(1)
+        sys.exit(1)
+
     ProxyView.api_base_url = args.base_url
     request_timeout = args.timeout * 60
-    logging.info(
+    logger.info(
         f"Starting server at {args.host}:{args.port} - upstream : {args.base_url}"
     )
     try:
@@ -216,14 +221,17 @@ if __name__ == "__main__":
         )
         if not test_resp.ok:
             print(
-                f"Error : API failed to pass live-status check - ({test_resp.status_code}, {test_resp.reason}, {test_resp.text}) "
+                "Error : API failed to pass live-status check - "
+                f"({test_resp.status_code}, {test_resp.reason}, {test_resp.text})"
             )
-            exit(1)
+            sys.exit(1)
     except Exception as e:
         print(
-            f"Error : Unable to reach API at - {ProxyView.api_base_url} due to : {get_exception_string(e)}"
+            "Error : Unable to reach API at - {ProxyView.api_base_url} due to : "
+            f"{get_exception_string(e)}"
         )
-        exit(1)
+        sys.exit(1)
+
     app.run(host=args.host, port=args.port, debug=False)
 
 

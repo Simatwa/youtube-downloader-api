@@ -1,0 +1,44 @@
+[project]
+name = "youtube-downloader-api"
+version = "0.1.0"
+description = "A REST-API that provide endpoints for searching, extracting metadata and downloading YouTube videos in mp4, webm, m4a and mp3 formats in different qualities including 8k"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "a2wsgi==1.10.7",
+    "email-validator==2.2.0",
+    "fastapi[standard]==0.115.5",
+    "flask==3.1.0",
+    "flask-cors==5.0.0",
+    "innertube>=2.1.16",
+    "python-dotenv==1.0.0",
+    "requests>=2.31.0",
+    "sqlmodel==0.0.27",
+    "yt-dlp-bonus>=0.2.8",
+]
+
+[dependency-groups]
+dev = [
+    "aiohttp>=3.13.5",
+    "pytest>=9.0.3",
+]
+
+[tool.ruff]
+line-length = 82
+
+[tool.ruff.lint]
+select = [
+    "E",      # https://docs.astral.sh/ruff/rules/#error-e
+    "F",      # https://docs.astral.sh/ruff/rules/#pyflakes-f
+    "I",      # https://docs.astral.sh/ruff/rules/#isort-i
+    "FA",     # https://docs.astral.sh/ruff/rules/#flake8-future-annotations-fa
+    "UP",     # https://docs.astral.sh/ruff/rules/#pyupgrade-up
+    "RUF100", # https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+]
+ignore = [
+    "UP031",  # https://docs.astral.sh/ruff/rules/printf-string-formatting/
+    "F401"    # https://docs.astral.sh/ruff/rules/unused-import
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true

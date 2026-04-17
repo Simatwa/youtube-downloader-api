@@ -1,12 +1,14 @@
 """Startup and shutdown events"""
 
-from app.utils import create_temp_dirs, download_dir, utc_now, logger
-from fastapi import FastAPI
-from shutil import rmtree
-from app.db import create_tables, VideoInfo, engine
-from sqlmodel import Session, delete
-from app.config import loaded_config
 from datetime import timedelta
+from shutil import rmtree
+
+from fastapi import FastAPI
+from sqlmodel import Session, delete
+
+from app.config import loaded_config
+from app.db import VideoInfo, create_tables, engine
+from app.utils import create_temp_dirs, download_dir, logger, utc_now
 
 
 def event_startup_create_tempdirs():

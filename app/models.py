@@ -28,7 +28,9 @@ class EnvVariables(BaseModel):
     # API
     api_description: str | None = ""
     api_title: str | None = "Youtube-Downloader"
-    api_terms_of_service: HttpUrl | None = "http://localhost:8000/terms-of-service"
+    api_terms_of_service: HttpUrl | None = (
+        "http://localhost:8000/terms-of-service"
+    )
 
     visitorData: str | None = Field(
         None, description="Extracted along with po token"
@@ -85,15 +87,15 @@ class EnvVariables(BaseModel):
     append_id_in_filename: bool = False
 
     js_runtime: str | None = None
-    js_runtime_name: str | None = 'deno'
+    js_runtime_name: str | None = "deno"
 
     @property
     def ytdlp_params(self) -> dict[str, int | bool | None]:
 
         if self.serve_frontend_from_static_server and not self.frontend_dir:
-            raise Exception(  # noqa: TRY002
-                "You have specified to serve frontend contents from static server "
-                "yet you have NOT specified the FRONTEND-DIR. "
+            raise Exception(
+                "You have specified to serve frontend contents from static server"
+                " yet you have NOT specified the FRONTEND-DIR. "
                 "Set the path to frontend_dir in the .env (config) file."
             )
 
@@ -126,9 +128,7 @@ class EnvVariables(BaseModel):
 
         if self.js_runtime:
             params["js_runtimes"] = {
-                self.js_runtime_name: {
-                    'path' : self.js_runtime
-                }
+                self.js_runtime_name: {"path": self.js_runtime}
             }
 
         if self.proxy:
@@ -160,7 +160,9 @@ class EnvVariables(BaseModel):
                     }
                 }
             else:
-                raise ValueError("po_token requires either cookiefile or visitorData.")
+                raise ValueError(
+                    "po_token requires either cookiefile or visitorData."
+                )
         elif self.visitorData:
             params["extractor_args"] = {
                 "youtube": {
@@ -176,8 +178,9 @@ class EnvVariables(BaseModel):
             return ""
         description_path = Path(value)
         if not description_path.exists() or not description_path.is_file():
-            raise TypeError(
-                f"Invalid value for api_description passed - {value}. Must be a valid path to a file."
+            raise ValueError(
+                f"Invalid value for api_description passed - {value}."
+                " Must be a valid path to a file."
             )
         with open(value) as fh:
             return fh.read()
@@ -187,8 +190,9 @@ class EnvVariables(BaseModel):
         working_dir = Path(value)
         if value == "static" and not working_dir.exists():
             os.mkdir("static")
+
         elif not working_dir.exists() or not working_dir.is_dir():
-            raise TypeError(f"Invalid working_directory passed - {value}")
+            raise ValueError(f"Invalid working_directory passed - {value}")
         return value
 
     @field_validator("cookiefile")
@@ -197,7 +201,7 @@ class EnvVariables(BaseModel):
             return
         cookiefile = Path(value)
         if not cookiefile.exists() or not cookiefile.is_file():
-            raise TypeError(f"Invalid cookiefile passed - {value}")
+            raise ValueError(f"Invalid cookiefile passed - {value}")
         return value
 
     @field_validator("js_runtime")
@@ -206,7 +210,7 @@ class EnvVariables(BaseModel):
             return
         file = Path(value)
         if not file.exists() or not file.is_file():
-            raise TypeError(f"Invalid value for js_runtime passed - {value}")
+            raise ValueError(f"Invalid value for js_runtime passed - {value}")
         return value
 
     @field_validator("frontend_dir")
@@ -215,15 +219,19 @@ class EnvVariables(BaseModel):
             return
         frontend_dir = Path(value)
         if not frontend_dir.exists() or not frontend_dir.is_dir():
-            raise TypeError(f"Invalid frontend_dir passed - {value}")
+            raise ValueError(f"Invalid frontend_dir passed - {value}")
+
         if not frontend_dir.joinpath("index.html").exists():
-            raise TypeError(f"Frontend-dir must contain index.html file - {value}")
+            raise ValueError(
+                f"Frontend-dir must contain index.html file - {value}"
+            )
         return value
 
     @field_validator("static_server_url")
     def validate_static_server_url(value: str | None):
         if value and not value.startswith("http"):
-            raise TypeError(f"Invalid value for static_server_url - {value}")
+            raise ValueError(f"Invalid value for static_server_url - {value}")
+
         return value
 
     @field_validator("filename_prefix")

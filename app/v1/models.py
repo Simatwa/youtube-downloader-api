@@ -1,9 +1,10 @@
+from typing import Literal, Optional
+
 from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, Literal
 from yt_dlp_bonus.constants import (
-    mediaQualitiesType,
     audioBitratesType,
     audioExtensionsType,
+    mediaQualitiesType,
     videoExtensionsType,
 )
 
@@ -12,7 +13,7 @@ class SearchVideosResponse(BaseModel):
     class VideoMetadata(BaseModel):
         title: str = Field(description="Video title as in Youtube")
         id: str = Field(description="Video id")
-        duration: Optional[str] = Field(None, description="Video's total running")
+        duration: str | None = Field(None, description="Video's total running")
 
     query: str = Field(description="Search query")
     results: list[VideoMetadata]
@@ -28,7 +29,8 @@ class SearchVideosResponse(BaseModel):
                         "duration": "3:46",
                     },
                     {
-                        "title": "Jux Ft Diamond Platnumz - Ololufe Mi (Official Video)",
+                        "title": "Jux Ft Diamond Platnumz - Ololufe Mi "
+                        "(Official Video)",
                         "id": "6Z5CEE25QH8",
                         "duration": "4:20",
                     },
@@ -38,7 +40,8 @@ class SearchVideosResponse(BaseModel):
                         "duration": "4:43",
                     },
                     {
-                        "title": "Diamond | Official Music Video | Gurnam Bhullar | Songs 2018 | Jass Records",
+                        "title": "Diamond | Official Music Video | Gurnam Bhullar"
+                        " | Songs 2018 | Jass Records",
                         "id": "ggJMQHltiQc",
                         "duration": "4:21",
                     },
@@ -48,27 +51,33 @@ class SearchVideosResponse(BaseModel):
                         "duration": "3:19",
                     },
                     {
-                        "title": "Diamond Platnumz Ft Mr. Blue & Jay Melody - Mapoz (Official Music Video)",
+                        "title": "Diamond Platnumz Ft Mr. Blue & Jay Melody - "
+                        "Mapoz (Official Music Video)",
                         "id": "M1dUTxVXS5Q",
                         "duration": "4:08",
                     },
                     {
-                        "title": "Diamond Platnumz x Jason Derulo ft Khalil Harisson & Chley - Komasava Remix (Official Music Video)",
+                        "title": "Diamond Platnumz x Jason Derulo ft Khalil "
+                        "Harisson & Chley - Komasava Remix "
+                        "(Official Music Video)",
                         "id": "RpZRtX2mQdc",
                         "duration": "4:51",
                     },
                     {
-                        "title": "Diamond Platnumz feat Chley - Shu! (Official Music Video)",
+                        "title": "Diamond Platnumz feat Chley - Shu! "
+                        "(Official Music Video)",
                         "id": "e2byDgJ8AyA",
                         "duration": "4:25",
                     },
                     {
-                        "title": "Diamond platnumz ft Willy Paul _ Yaishe (official music video)",
+                        "title": "Diamond platnumz ft Willy Paul _ Yaishe "
+                        "(official music video)",
                         "id": "SISK-4gqgc0",
                         "duration": "2:02",
                     },
                     {
-                        "title": "1 Hour Diamond Hall Meditation Silent Music | #silentmusic #pandavbhawan @BrahmaKumarisHapur",
+                        "title": "1 Hour Diamond Hall Meditation Silent Music "
+                        "| #silentmusic #pandavbhawan @BrahmaKumarisHapur",
                         "id": "Fvu0Yn4Yg98",
                         "duration": "1:00:58",
                     },
@@ -81,23 +90,23 @@ class SearchVideosResponse(BaseModel):
 class VideoMetadataResponse(BaseModel):
     class MediaMetadata(BaseModel):
         quality: str  # mediaQualitiesType
-        size: Optional[str] = None
+        size: str | None = None
 
     class MediaFormats(BaseModel):
         audio: audioExtensionsType
         video: videoExtensionsType
 
     class OtherMetadata(BaseModel):
-        like_count: Optional[int] = None
-        views_count: Optional[int] = None
+        like_count: int | None = None
+        views_count: int | None = None
         categories: list[str]
         tags: list[str]
 
     id: str
     title: str
-    channel: Optional[str] = None
-    uploader_url: Optional[str] = None
-    duration_string: Optional[str] = None
+    channel: str | None = None
+    uploader_url: str | None = None
+    duration_string: str | None = None
     thumbnail: HttpUrl
     audio: list[MediaMetadata]
     video: list[MediaMetadata]
@@ -108,7 +117,8 @@ class VideoMetadataResponse(BaseModel):
         "json_schema_extra": {
             "example": {
                 "id": "lw5tB9LQQVM",
-                "title": "Marioo feat Fathermoh, Sean Mmg, Ssaru & Motif - Statue (Official Music Video)",
+                "title": "Marioo feat Fathermoh, Sean Mmg, Ssaru & Motif - Statue"
+                " (Official Music Video)",
                 "channel": "MariooOfficial",
                 "uploader_url": "https://www.youtube.com/@MariooOfficialMusic",
                 "duration_string": "2:34",
@@ -138,7 +148,7 @@ class MediaDownloadProcessPayload(BaseModel):
     url: str = Field(description="Link to the Youtube video or video id")
     quality: mediaQualitiesType | Literal["bestaudio", "bestvideo", "best"]
     bitrate: audioBitratesType | None = None
-    x_lang: Optional[str] = "en"
+    x_lang: str | None = "en"
 
     model_config = {
         "json_schema_extra": {
@@ -166,9 +176,9 @@ class MediaDownloadProcessPayload(BaseModel):
 
 class MediaDownloadResponse(BaseModel):
     is_success: bool = Field(description="Download successful status")
-    filename: Optional[str] = None
+    filename: str | None = None
     filesize: str
-    link: Optional[str] = Field(
+    link: str | None = Field(
         description="Link pointing to downloadable media file or video id"
     )
 
@@ -178,7 +188,8 @@ class MediaDownloadResponse(BaseModel):
                 "is_success": True,
                 "filename": "Alan Walker - Alone 1080p.mp4",
                 "filesize": "35.37 MB",
-                "link": "//localhost:8000/static/file/Alan%20Walker%20-%20Alone%201080p.mp4",
+                "link": "//localhost:8000/static/file/Alan%20Walker%20-"
+                "%20Alone%201080p.mp4",
             }
         }
     }

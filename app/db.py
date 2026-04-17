@@ -1,14 +1,17 @@
-from sqlmodel import SQLModel, Field, Text, Column, create_engine, Session
-from datetime import datetime
-from app.utils import utc_now
-from app.config import loaded_config
-from datetime import timedelta
-from yt_dlp_bonus.models import ExtractedInfo
+from datetime import datetime, timedelta
 from json import loads
+
+from sqlmodel import Column, Field, Session, SQLModel, Text, create_engine
+from yt_dlp_bonus.models import ExtractedInfo
+
+from app.config import loaded_config
+from app.utils import utc_now
 
 engine = create_engine(url=loaded_config.database_engine)
 
-video_info_cache_period = timedelta(hours=loaded_config.video_info_cache_period_in_hrs)
+video_info_cache_period = timedelta(
+    hours=loaded_config.video_info_cache_period_in_hrs
+)
 
 
 class VideoInfo(SQLModel, table=True):

@@ -7,7 +7,6 @@
 <!--
 <a href="https://github.com/Simatwa/youtube-downloader-api/releases"><img src="https://img.shields.io/github/release-date/Simatwa/youtube-downloader-api?label=Release date&logo=github" alt="release date"></img></a>
 -->
-<a href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg"/></a>
 <a href="https://github.com/Simatwa/youtube-downloader-api"><img src="https://hits.sh/github.com/Simatwa/youtube-downloader-api.svg?label=Total%20hits&logo=dotenv" alt="Total hits"/></a>
 </p>
 
@@ -46,7 +45,7 @@ source .venv/bin/activate
 After activating the virtual environment, install the required dependencies:
 
 ```sh
-uv pip install -r requirements-all.txt
+uv sync
 ```
 
 > [!TIP]
@@ -64,7 +63,7 @@ Copy any of [configs/env/*](../configs/env/) file to the root directory of the p
 Finally, start the server using the following command:
 
 ```sh
-python -m app run
+uv run python -m app run
 ```
 
 The docs will be accessible from  <http://localhost:8000/api/docs> and redocs from <http://localhost:8000/api/redoc>
@@ -72,7 +71,7 @@ The docs will be accessible from  <http://localhost:8000/api/docs> and redocs fr
 > [!TIP]
 > For a more smoother control over the server's startup, consider using the FastAPI's cli.
 > Running `$ fastapi run app` will equally fire-up the server.
-> For more help info such as changing **host** and **port**, you can simply run `$ fastapi run --help`.
+> For more help info such as changing **host** and **port**, you can simply run `$ uv run fastapi run --help`.
 
 ## Serving frontend contents
 

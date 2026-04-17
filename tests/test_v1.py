@@ -1,7 +1,8 @@
 import pytest
-from tests import client
+
 import app.v1.models as models
-from app.events import event_startup_create_tempdirs, event_startup_create_tables
+from app.events import event_startup_create_tables, event_startup_create_tempdirs
+from tests import client
 
 video_link = "https://youtu.be/S3wsCRJVUyg?si=SjN17MR1-u7BPgxk?si=svRtQPHef9TSMABt"
 # https://youtu.be/R3GfuzLMPkA?si=YItOxtgw3LAjKps1

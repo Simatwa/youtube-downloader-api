@@ -1,6 +1,8 @@
-from app.models import EnvVariables
-from dotenv import dotenv_values
 from pathlib import Path
+
+from dotenv import dotenv_values
+
+from app.models import EnvVariables
 
 loaded_config = EnvVariables(**dotenv_values())
 """Loaded from .env file"""
