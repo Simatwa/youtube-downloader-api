@@ -1,6 +1,7 @@
 """Youtube downloader API"""
 
 import time
+from contextlib import asynccontextmanager
 
 from a2wsgi import WSGIMiddleware
 from fastapi import FastAPI, Request, Response
@@ -9,9 +10,14 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import loaded_config
-from app.events import register_events
+from app.events import (
+    create_temp_dirs,
+    event_all_delete_expired_extracted_info,
+    event_shutdown_clear_previous_downloads,
+    event_startup_create_tables,
+)
 from app.static import static_app
-from app.utils import create_temp_dirs, logger
+from app.utils import logger
 
 create_temp_dirs()
 
@@ -39,7 +45,7 @@ if not loaded_config.static_server_url:
     app.mount("/static", WSGIMiddleware(static_app, workers=50))
 
 
-@app.get("/api/live-check", include_in_schema=False)
+@app.get("/api/health", include_in_schema=False)
 def test_live():
     """Check API's live status"""
     return {}
@@ -94,6 +100,18 @@ async def add_cache_header(request: Request, call_next):
     return response
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup
+    # create_temp_dirs()
+    event_startup_create_tables()
+    event_all_delete_expired_extracted_info()
+    yield app
+    # shutdown
+    event_shutdown_clear_previous_downloads()
+    event_all_delete_expired_extracted_info()
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -101,5 +119,3 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
-
-app = register_events(app)
