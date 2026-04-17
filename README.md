@@ -90,7 +90,7 @@ Once running, the API documentation is available at:
 The API can serve a static frontend alongside the backend. To enable this, set the `frontend_dir` key in your [configuration file](./config.yml) to the path of the directory containing your frontend build.
 
 > [!NOTE]
-> The specified frontend directory **must** contain an `index.html` file at its root. Without it, the frontend will not be served correctly.
+> The specified frontend directory **must** contain an `index.html` file at its root. Without it, the frontend will not be served correctly. Use `YDA_CONFIG_FILE_PATH` environment variable to declare path to yaml file serving as configuration file.
 
 ## Optimizing Server Performance
 

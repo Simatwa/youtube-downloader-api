@@ -1,3 +1,4 @@
+import os
 import tomllib
 from pathlib import Path
 
@@ -6,8 +7,17 @@ import yaml
 from app.models import ConfigModel
 
 PROJECT_DIR = Path(__file__).parent.parent
+ENV_CONFIG_FILE_PATH = os.getenv("YDA_CONFIG_FILE_PATH")
 
-CONFIG_FILE_PATH = PROJECT_DIR / "config.yml"
+if ENV_CONFIG_FILE_PATH:
+    CONFIG_FILE_PATH = Path(ENV_CONFIG_FILE_PATH)
+else:
+    CONFIG_FILE_PATH = PROJECT_DIR / "config.yml"
+
+
+assert CONFIG_FILE_PATH.exists(), (
+    f"Invalid config file path {CONFIG_FILE_PATH.absolute()!r}. Does not exist"
+)
 
 config_values = yaml.safe_load(open(CONFIG_FILE_PATH))
 
