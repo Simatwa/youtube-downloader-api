@@ -58,7 +58,7 @@ mv production.yml config.yml
 ```
 
 > [!WARNING]
-> Some settings in `config.yml` are critical to the app's operation. Incorrect values — such as wrong paths, invalid port numbers, or misconfigured storage — can break functionality entirely. Make changes only when you understand their effect.
+> Some settings in `config.yml` are critical to the app's operation. Incorrect values can break functionality entirely. Make changes only when you understand their effect.
 
 ### Step 4: Start the Server
 
@@ -115,10 +115,10 @@ YouTube actively flags and blocks requests that lack proper browser-like authori
 
 **Recommended workarounds:**
 
-1. **Cookies + PO Token** — Extract your browser cookies and a valid `po_token`, then pass them to the app. This is the most reliable method. See the full guide:
+1. **Cookies + PO Token** - Extract your browser cookies and a valid `po_token`, then pass them to the app. This is the most reliable method. See the full guide:
    [How to extract PO Token](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#po-token-guide)
 
-2. **Whitelisted Proxy** — Route requests through a proxy server that YouTube has not flagged. Use the included [Proxy Server](../servers/proxy.py) as a starting point.
+2. **Whitelisted Proxy** - Route requests through a proxy server that YouTube has not flagged.
 
 > [!NOTE]
 > Using a proxy does not guarantee success. YouTube's detection mechanisms can flag proxy IPs as well. The cookie + PO token approach is generally more stable.
@@ -145,8 +145,8 @@ _Built a frontend that works with this API? Feel free to open a PR and add it to
 ## Additional Resources
 
 - [How to extract PO Token](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#po-token-guide) — Required reading if you encounter YouTube authorization errors
-- [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp) — The underlying download engine powering this API
-- [uWSGI documentation](https://uwsgi-docs.readthedocs.io/en/latest/) — Recommended for production static file serving
+- [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp) - The underlying download engine powering this API
+- [uWSGI documentation](https://uwsgi-docs.readthedocs.io/en/latest/) - Recommended for production static file serving
 
 ## License
 
