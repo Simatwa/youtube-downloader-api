@@ -1,58 +1,58 @@
-
+## Basic configuration optimized for personal use case
 #### API-INFO
-api_title = Youtube-Downloader-API
+api_title : Youtube-Downloader-API
 # API title
 
-api_description = docs/DESCRIPTION.md
+api_description : docs/DESCRIPTION.md
 # Path to markdown file containing API description.
 
-api_terms_of_service = http://localhost:8000/terms-of-service
+api_terms_of_service : http://localhost:8000/terms-of-service
 # absolute url to terms of service.
 
-contact_name = YoutubeDownloader
+contact_name : YoutubeDownloader
 # Name of the person to appear on contacts section
 
-contact_email = user@localhost.dev
+contact_email : user@localhost.dev
 # Email address of the contact_name
 
-contact_url = http://localhost:8000/user
+contact_url : http://localhost:8000/user
 # URL pointing to contact_name's website
 
-frontend_dir=
+frontend_dir:
 # Path to directory containing the frontend files
 
 
 ### API CONFIGURATIONS ###########
-database_engine = sqlite:///db.sqlite3
+database_engine : sqlite:///db.sqlite3
 # sqlalchemy database engine
 
-po_token =
+po_token :
 # Po-token value
 
-visitorData =
+visitorData :
 # Visit https://github.com/yt-dlp/yt-dlp/wiki/Extractors
 # To get to know how to extract po_token and visitorData
 # https://www.youtube.com/embed/aqz-KE-bpKQ
 
-cookiefile =
+cookiefile :
 # Path to Youtube's cookie file formatted in netscape.
 
-proxy =
+proxy :
 # htttps proxy such as 127.0.0.1:7071 or socks5://127.0.0.1:5000
 
-filename_prefix =
+filename_prefix :
 # text to be appended to every downloadable filename
 
-working_directory = static
+working_directory : static
 # directory for saving static contents. Defaults to pwd.
 
-clear_temps = true
+clear_temps : true
 # flag for controlling temporary file clearance
 
-search_limit = 50
+search_limit : 50
 # Video search results limit
 
-default_extension = webm
+default_extension : webm
 # Extension filter for downloading videos/audios
 # possible values [webm, mp4]
 #############################################################################
@@ -66,88 +66,88 @@ default_extension = webm
 # | Download Speed    | Fast                    | Fast                      |
 ##############################################################################
 
-enable_logging = false
+enable_logging : false
 # downloader logging
 
 ### STATIC SERVER CONFIGS ####
 
-static_server_url =
+static_server_url :
 # Static server accessible endpoint
 # e.g http://localhost:8888/file
 
-serve_frontend_from_static_server=false
+serve_frontend_from_static_server: false
 # Frontend contents will be served along with 
 # downloadable videos and audios
 # NOTE: This disables serving forntend-contents from the API server
 
-api_base_url =
+api_base_url :
 # To be used for running the proxy script - url pointing to the API
 # e.g http://localhost:8000
 
 ####    DOWNLOAD OPTIONS ####
 
-default_audio_format = m4a
+default_audio_format : m4a
 # Default non-mp3 audio format
 # possible values [webm, m4a]
 
 
-video_info_cache_period_in_hrs = 4
+video_info_cache_period_in_hrs : 4
  # Fetched video info validity period in hours
 
-http_chunk_size = 1024
+http_chunk_size : 1024
 # Download chunk_size in bytes.
 
-# buffersize =
+# buffersize :
 # Size of download buffer in bytes.
 
-# ratelimit =
+# ratelimit :
 #  Download speed limit, in bytes/sec.
 
-# throttledratelimit =
+# throttledratelimit :
 # Assume the download is being throttled below this speed (bytes/sec)
 
-concurrent_fragment_downloads = 1
+concurrent_fragment_downloads : 1
 
-# min_filesize =
+# min_filesize :
 # Skip files smaller than this size
 
-# max_filesize =
+# max_filesize :
 # Skip files larger than this size
 
-noresizebuffer = false
+noresizebuffer : false
 #  Do not automatically resize the download buffer.
 
-retries = 3
+retries : 3
 # Number of times to retry for expected network errors
 
-continuedl = true
+continuedl : true
 # Try to continue downloads if possible.
 
-noprogress = false
+noprogress : false
 # Do not print the progress bar
 
-nopart = false
+nopart : false
 # Do not use temporary .part files.
 
-updatetime = true
+updatetime : true
 # Use the Last-modified header to set output file timestamps.
 
-verbose = false
+verbose : false
 # Print additional info to stdout.
 
-quiet = false
+quiet : false
 # Do not print messages to stdout.
 
-allow_multiple_video_streams = false
+allow_multiple_video_streams : false
 # Allow multiple video streams to be merged into a single file
 
-allow_multiple_audio_streams = false
+allow_multiple_audio_streams : false
 # Allow multiple audio streams to be merged
 
-geo_bypass = false
+geo_bypass : false
 #Bypass geographic restriction via faking X-Forwarded-For HTTP header
 
-# geo_bypass_country =
+# geo_bypass_country :
 # Two-letter ISO 3166-2 country code that will be used for
 # explicit geographic restriction bypassing via faking
 # X-Forwarded-For HTTP header
@@ -155,18 +155,20 @@ geo_bypass = false
 # Path to JS-Runtime
 # deno is recommended - https://github.com/denoland/deno
 # eg. /home/smartwa/.deno/bin/deno
-#js_runtime = /home/smartwa/.deno/bin/deno
+#js_runtime : /home/smartwa/.deno/bin/deno
 
 # Check https://github.com/yt-dlp/yt-dlp/issues/15012 for more details 
-# js_runtime_name = deno
+# js_runtime_name : deno
 
 
 # POST-DOWNLOAD OPTIONS
 
-embed_subtitles = false
+embed_subtitles : false
 # Embed subtitles to downloaded videos
 
-append_id_in_filename = false
+append_id_in_filename : false
 # Include the video id in its filename
 # To add uniqueness to videos with a common title
 
+# Whether to clear downloaded contents on shutdown/startup or not
+clear_downloaded_contents : True

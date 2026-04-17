@@ -8,5 +8,5 @@
 | 1     | Proxy  | `$ uwsgi --ini configs/uwsgi/proxy.ini`  | `$ make uwsgi-static`|
 
 > [!IMPORTANT]
-> Modify the config to match your pereference.
+> Modify the config to match your preference.
 

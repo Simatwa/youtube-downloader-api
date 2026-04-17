@@ -1,19 +1,12 @@
 import pytest
 
 import app.v1.models as models
-from app.events import event_startup_create_tables, event_startup_create_tempdirs
 from tests import client
 
-video_link = "https://youtu.be/S3wsCRJVUyg?si=SjN17MR1-u7BPgxk?si=svRtQPHef9TSMABt"
+video_link = (
+    "https://youtu.be/S3wsCRJVUyg?si=SjN17MR1-u7BPgxk?si=svRtQPHef9TSMABt"
+)
 # https://youtu.be/R3GfuzLMPkA?si=YItOxtgw3LAjKps1
-
-
-def run_startup_events():
-    for event in [event_startup_create_tempdirs, event_startup_create_tables]:
-        event()
-
-
-run_startup_events()
 
 
 @pytest.mark.parametrize(["query", "limit"], [("hello", 2), ("hey", 1)])

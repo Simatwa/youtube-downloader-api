@@ -20,7 +20,7 @@ class CustomWebsocketResponse(BaseModel):
     detail: dict
 
 
-class EnvVariables(BaseModel):
+class ConfigModel(BaseModel):
     # contacts
     contact_name: str | None = "Unknown"
     contact_email: EmailStr | None = "email@localhost.dev"
@@ -88,6 +88,8 @@ class EnvVariables(BaseModel):
 
     js_runtime: str | None = None
     js_runtime_name: str | None = "deno"
+
+    clear_downloaded_contents: bool = True
 
     @property
     def ytdlp_params(self) -> dict[str, int | bool | None]:
@@ -257,4 +259,5 @@ class EnvVariables(BaseModel):
         """Checks that `api_base_url` is not None"""
         if not self.api_base_url:
             raise ValueError("Base url for API cannot be null.")
+
         return self.api_base_url

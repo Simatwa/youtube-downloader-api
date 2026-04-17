@@ -9,6 +9,8 @@ accessible over http and a web-interface that's accessible securely (https).
 2. Start this proxy (locally) and point base_url to the address of
  youtube-downloader-api
 3. Point API-BASE-URL in web-interface to proxy's address.
+
+NOTE: This is only for personal use and its NOT SUITABLE FOR PRODUCTION DEPLOYMENT
 """
 
 import logging
@@ -49,9 +51,9 @@ cors = CORS(
 )
 
 
-logger.basicConfig(
+logging.basicConfig(
     format="%(asctime)s - %(levelname)s : %(message)s",
-    level=logger.INFO,
+    level=logging.INFO,
     datefmt="%H:%M:%S %d-%b-%Y",
 )
 
@@ -78,12 +80,14 @@ def view_error_handler(func: t.Callable):
     def decorator(*args, **kwargs):
         try:
             return func(*args, **kwargs)
+
         except Timeout:
             return ErrorResponse(
                 detail="Connection timed out while connecting to API "
                 f"after {request_timeout}",
                 timeout=504,
             ).respond()
+
         except Exception as e:
             return ErrorResponse(
                 detail=get_exception_string(e),
@@ -140,6 +144,7 @@ class ProxyView(MethodView):
             timeout=request_timeout,
             headers=self.request_headers,
         )
+
         logger.debug(
             f"Serving {request.remote_addr} - {api_endpoint} - {resp.status_code}"
         )
@@ -153,6 +158,7 @@ class ProxyView(MethodView):
     @view_error_handler
     def post(self, api_endpoint: str):
         """Handles get requests"""
+
         resp = session.post(
             self.get_absolute_url(api_endpoint),
             params=self.request_params,
@@ -160,6 +166,7 @@ class ProxyView(MethodView):
             timeout=request_timeout,
             headers=self.request_headers,
         )
+
         logger.debug(
             f"Serving {request.remote_addr} - {api_endpoint} - {resp.status_code}"
         )
@@ -211,14 +218,17 @@ if __name__ == "__main__":
         sys.exit(1)
 
     ProxyView.api_base_url = args.base_url
-    request_timeout = args.timeout * 60
+    request_timeout = args.timeout * 6
+
     logger.info(
         f"Starting server at {args.host}:{args.port} - upstream : {args.base_url}"
     )
+
     try:
         test_resp = session.get(
-            path.join(ProxyView.api_base_url, "api/live-check"), timeout=20
+            path.join(ProxyView.api_base_url, "api/health"), timeout=20
         )
+
         if not test_resp.ok:
             print(
                 "Error : API failed to pass live-status check - "
@@ -227,9 +237,10 @@ if __name__ == "__main__":
             sys.exit(1)
     except Exception as e:
         print(
-            "Error : Unable to reach API at - {ProxyView.api_base_url} due to : "
+            f"Error : Unable to reach API at - {ProxyView.api_base_url} due to : "
             f"{get_exception_string(e)}"
         )
+
         sys.exit(1)
 
     app.run(host=args.host, port=args.port, debug=False)

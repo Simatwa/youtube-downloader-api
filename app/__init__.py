@@ -12,10 +12,11 @@ from fastapi.staticfiles import StaticFiles
 from app.config import loaded_config, pyproject_dot_toml_details
 from app.events import (
     create_temp_dirs,
-    event_all_delete_expired_extracted_info,
-    event_shutdown_clear_previous_downloads,
-    event_startup_create_tables,
+    event_clear_previous_downloads,
+    event_create_tables,
+    event_delete_expired_extracted_info,
 )
+from app.models import ConfigModel
 from app.static import static_app
 from app.utils import logger
 
@@ -30,13 +31,14 @@ from app.v1 import v1_router  # noqa: E402
 async def lifespan(app: FastAPI):
     # startup
     # create_temp_dirs()
-    event_startup_create_tables()
-    event_shutdown_clear_previous_downloads()
-    event_all_delete_expired_extracted_info()
+    event_create_tables()
+    event_delete_expired_extracted_info()
+
     yield
+
     # shutdown
-    event_shutdown_clear_previous_downloads()
-    event_all_delete_expired_extracted_info()
+    event_clear_previous_downloads()
+    event_delete_expired_extracted_info()
 
 
 app = FastAPI(
@@ -48,7 +50,8 @@ app = FastAPI(
     contact=loaded_config.contacts,
     license_info={
         "name": "GPLv3",
-        "url": "https://raw.githubusercontent.com/Simatwa/youtube-downloader-api/refs/heads/main/LICENSE",
+        "url": "https://raw.githubusercontent.com/Simatwa/"
+        "youtube-downloader-api/refs/heads/main/LICENSE",
     },
     docs_url="/api/docs",
     redoc_url="/api/redoc",
@@ -60,6 +63,12 @@ app.include_router(v1_router, prefix="/api", tags=["v1"])
 
 if not loaded_config.static_server_url:
     app.mount("/static", WSGIMiddleware(static_app, workers=50))
+
+
+@app.get("/api/config", include_in_schema=False)
+def get_app_config() -> ConfigModel:
+    """Get current running app configuration"""
+    return loaded_config
 
 
 @app.get("/api/health", include_in_schema=False)

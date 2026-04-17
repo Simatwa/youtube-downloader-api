@@ -2,7 +2,7 @@
 """
 Converts fastapi app to wsgi app
 
-uv run --active uwsgi --http=0.0.0.0:8080 -w main:application
+uv run --active uwsgi --http=0.0.0.0:8080 -w app.uwsgi:application
 """
 
 from a2wsgi import ASGIMiddleware
