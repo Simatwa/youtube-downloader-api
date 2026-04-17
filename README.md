@@ -16,8 +16,8 @@ A REST API that provides endpoints for searching, extracting metadata, and downl
 
 Before getting started, ensure the following are installed on your system:
 
-- [Python 3.10 or higher](https://python.org) — the runtime environment
-- [Git](https://git-scm.com/) — for cloning the repository
+- [Python 3.10 or higher](https://python.org) - the runtime environment
+- [Git](https://git-scm.com/) - for cloning the repository
 
 ## Installation Guide
 
@@ -144,7 +144,7 @@ _Built a frontend that works with this API? Feel free to open a PR and add it to
 
 ## Additional Resources
 
-- [How to extract PO Token](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#po-token-guide) — Required reading if you encounter YouTube authorization errors
+- [How to extract PO Token](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#po-token-guide) - Required reading if you encounter YouTube authorization errors
 - [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp) - The underlying download engine powering this API
 - [uWSGI documentation](https://uwsgi-docs.readthedocs.io/en/latest/) - Recommended for production static file serving
 
