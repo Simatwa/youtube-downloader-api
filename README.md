@@ -7,9 +7,10 @@
 [![Release date](https://img.shields.io/github/release-date/Simatwa/youtube-downloader-api?label=Release%20date&logo=github)](https://github.com/Simatwa/youtube-downloader-api/releases)
 [![Total hits](https://hits.sh/github.com/Simatwa/youtube-downloader-api.svg?label=Total%20hits)](https://github.com/Simatwa/youtube-downloader-api)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+</div>
+
 
 A REST API that provides endpoints for searching, extracting metadata, and downloading YouTube videos in **mp4**, **webm**, **m4a**, and **mp3** formats across multiple quality levels. It is built on FastAPI and powered by `yt-dlp` under the hood, making it suitable for both local use and production deployment.
-</div>
 
 ## Prerequisites
 
