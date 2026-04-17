@@ -1,6 +1,4 @@
-## Optimized for production deployment
-## Rename this file "config.yml" to be used by the server for configuration
-
+## Basic configuration optimized for family usage
 #### API-INFO
 api_title : Youtube-Downloader-API
 # API title
@@ -42,7 +40,7 @@ cookiefile :
 proxy :
 # htttps proxy such as 127.0.0.1:7071 or socks5://127.0.0.1:5000
 
-filename_prefix :
+filename_prefix : 
 # text to be appended to every downloadable filename
 
 working_directory : static
@@ -92,10 +90,11 @@ default_audio_format : m4a
 # Default non-mp3 audio format
 # possible values [webm, m4a]
 
+
 video_info_cache_period_in_hrs : 4
  # Fetched video info validity period in hours
 
-http_chunk_size : 4096
+http_chunk_size : 2048
 # Download chunk_size in bytes.
 
 # buffersize :
@@ -118,7 +117,7 @@ concurrent_fragment_downloads : 1
 noresizebuffer : false
 #  Do not automatically resize the download buffer.
 
-retries : 10
+retries : 5
 # Number of times to retry for expected network errors
 
 continuedl : true
@@ -130,7 +129,7 @@ noprogress : true
 nopart : false
 # Do not use temporary .part files.
 
-updatetime : false
+updatetime : true
 # Use the Last-modified header to set output file timestamps.
 
 verbose : false
@@ -153,15 +152,6 @@ geo_bypass : false
 # explicit geographic restriction bypassing via faking
 # X-Forwarded-For HTTP header
 
-# POST-DOWNLOAD OPTIONS
-
-embed_subtitles : false
-# Embed subtitles to downloaded videos
-
-append_id_in_filename : true
-# Include the video id in its filename
-# To add uniqueness to videos with a common title.
-
 # Path to JS-Runtime
 # deno is recommended - https://github.com/denoland/deno
 # eg. /home/smartwa/.deno/bin/deno
@@ -169,6 +159,16 @@ append_id_in_filename : true
 
 # Check https://github.com/yt-dlp/yt-dlp/issues/15012 for more details 
 # js_runtime_name : deno
+
+
+# POST-DOWNLOAD OPTIONS
+
+embed_subtitles : false
+# Embed subtitles to downloaded videos
+
+append_id_in_filename : false
+# Include the video id in its filename
+# To add uniqueness to videos with a common title
 
 # Whether to clear downloaded contents on shutdown/startup or not
 clear_downloaded_contents : True

@@ -1,4 +1,4 @@
-## Optimized for production deployment
+## Optimized for one org deployment
 ## Rename this file "config.yml" to be used by the server for configuration
 
 #### API-INFO
@@ -118,7 +118,7 @@ concurrent_fragment_downloads : 1
 noresizebuffer : false
 #  Do not automatically resize the download buffer.
 
-retries : 10
+retries : 7
 # Number of times to retry for expected network errors
 
 continuedl : true
