@@ -1,9 +1,13 @@
 # Configurations
 
-# [1. ENV](./env/)
-
 Contains configurations for the api
 
-# [2. UWSGI](./uwsgi/)
+# [1. UWSGI](./uwsgi/)
 
 Contains configurations for uwsgi server.
+
+# Youtube-Downloader API service
+
+```sh
+cp services/youtube-downloader-api.service ~/.config/systemd/user/
+```

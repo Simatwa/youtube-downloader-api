@@ -1,0 +1,14 @@
+[Unit]
+Description=YouTube Downloader API + Frontend
+After=default.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/smartwa/git/smartwa/youtube-downloader-api
+Environment=YDA_CONFIG_FILE_PATH=/home/smartwa/y2mate/.config.yml
+ExecStart=/home/smartwa/git/smartwa/youtube-downloader-api/.venv/bin/python -m fastapi run app --port 8088
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
