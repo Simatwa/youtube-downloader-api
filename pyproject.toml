@@ -9,7 +9,7 @@ dependencies = [
     "email-validator==2.2.0",
     "fastapi[standard]==0.136.0",
     "flask==3.1.3",
-    "flask-cors==5.0.0",
+    "flask-cors==6.0.2",
     "innertube",
     "python-dotenv==1.0.0",
     "requests>=2.31.0",
