@@ -27,7 +27,7 @@ Clone the project and navigate into the project directory:
 
 ```sh
 git clone https://github.com/Simatwa/youtube-downloader-api.git
-cd youtube-downloader
+cd youtube-downloader-api
 ```
 
 ### Step 2: Set Up a Virtual Environment
